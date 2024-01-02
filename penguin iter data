@@ -1,0 +1,59 @@
+import matplotlib.pyplot as plt
+import pandas as pd
+import numpy as np
+import seaborn as sns
+import matplotlib.pyplot
+from scipy.stats import skew,kurtosis
+df_1=pd.read_csv("https://raw.githubusercontent.com/annie1301/EDA/main/penguins_lter.csv")
+df_1=df_1.dropna(subset=['Sex'])#removing Nan values from Sex column
+#uni=df_1['Sex'].unique()
+df_1['Sex']=df_1['Sex'].replace(".",'').str.strip().str.lower().str.capitalize()
+df_1=df_1[df_1['Sex'].notna()] #removing '.' --- giving problem
+
+print(df_1['Sex'])
+males=df_1[df_1['Sex']=='Male']#getting only male penguin data
+print(males)
+females=df_1[df_1['Sex']=='Female']#getting only female penguin data
+print(females)
+no_male=males.value_counts()
+freq=df_1['Sex'].value_counts()
+plt.bar(freq.index,freq,color='blue')#bar plot of mae and female penguins
+plt.xlabel('Sex')
+plt.ylabel('Total number')
+plt.title('Bar plot of male and female penguins')
+plt.show()
+fre_spec=df_1['Species'].value_counts()#bar plot of species
+plt.bar(fre_spec.index,fre_spec,color='yellow')
+plt.xlabel("Names of species")
+plt.ylabel("Total number of each")
+plt.title("Bar plot of species")
+plt.show()
+#subplots of histograms
+plt.subplot(2,1,2)
+sns.histplot(df_1['Flipper Length (mm)'],bins=50,kde=True,color='lightblue',edgecolor='black')
+plt.title('Histogram for flipper length in mm')
+plt.xlabel("Flipper length(mm)")
+plt.ylabel("Count")
+plt.show()
+
+plt.subplot(1,1,1)
+sns.histplot(df_1['Body Mass (g)'],bins=40,kde=True,color='brown',edgecolor='black')
+plt.xlabel("Body mass(g)")
+plt.ylabel("Count")
+plt.show()
+
+#weight- filtering gentoo male and female penguins and finding median weight
+male_gentoo=df_1[(df_1['Sex']=='Male')&(df_1['Species']=='Gentoo penguin (Pygoscelis papua)')]
+print(male_gentoo['Body Mass (g)'].describe(include='all'))
+
+female_gentoo=df_1[(df_1['Sex']=='Female')&(df_1['Species']=='Gentoo penguin (Pygoscelis papua)')]
+print(female_gentoo['Body Mass (g)'].describe(include='all'))
+
+
+heavy_fem_gen=female_gentoo[female_gentoo['Body Mass (g)']>4700]#female gentoo with more than 4700g weight
+print(len(heavy_fem_gen))
+light_fem_gen=female_gentoo[female_gentoo['Body Mass (g)']<4700]#female gentoo with less than 4700g weight
+print(len(light_fem_gen))
+med_weig_fem_gen=female_gentoo[female_gentoo['Body Mass (g)']==4700]#female gentoo with 4700g weight
+print(len(med_weig_fem_gen))
+#same can be done for other species as well as for the male gender.
